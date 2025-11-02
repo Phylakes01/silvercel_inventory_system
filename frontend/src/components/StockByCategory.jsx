@@ -85,8 +85,8 @@ export default function StockByCategory() {
   return (
     <Card className="flex flex-col bg-(--color-card) text-(--color-card-foreground) border border-(--color-border)">
       <CardHeader>
-        <CardTitle>Stock By Category</CardTitle>
-        <CardDescription>Overview of available inventory</CardDescription>
+        <CardTitle className="sm:text-lg text-sm">Stock By Category</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Overview of available inventory</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -94,13 +94,13 @@ export default function StockByCategory() {
           key={width} // ✅ Only rerenders after resizing stops
           config={chartConfig}
           className="w-full"
-          style={{ height: `${chartData.length * 50 + 40}px` }}
+          style={{ height: `${chartData.length * 30 + 40}px` }}
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               layout="vertical"
-              margin={{ left: 40, right: 16, top: 6, bottom: 6 }}
+              margin={{ left: 40, right: 16, top: 2, bottom: 2 }}
               barSize={24}
             >
               <YAxis

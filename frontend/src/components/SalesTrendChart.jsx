@@ -175,7 +175,7 @@ export function SalesTrendChart() {
     <Card className="pt-0 bg--card text-card-foreground border border-border">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
-          <CardTitle className="sm:text-xl text-sm">Sales Trends Over Time</CardTitle>
+          <CardTitle className="sm:text-lg text-sm">Sales Trends Over Time</CardTitle>
           <CardDescription className="text-xs sm:text-sm">
             Showing total sales and items sold over time
           </CardDescription>
