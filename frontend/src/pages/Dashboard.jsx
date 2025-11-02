@@ -103,7 +103,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="w-full flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-6 mt-2 sm:mt-0">
             <div className="flex gap-6 justify-between items-center">
                 <p className="text-2xl font-semibold">Dashboard</p>
                 <LowStockPopover lowStockItems={exampleLowStockItems} />

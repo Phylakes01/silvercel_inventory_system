@@ -10,6 +10,7 @@ import Dashboard from "@/pages/Dashboard";
 import Settings from "@/pages/Settings";
 import ChangeEmail from "@/pages/ChangeEmail";
 import Products from "@/pages/Products";
+import Categories from "@/pages/Categories";
 
 export const router = createBrowserRouter([
     { path: "/", element: <Login /> },
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path: "products",
                 element: <Products />
+            },
+            {
+                path: "categories",
+                element: <Categories />
             },
             // Add more protected routes here
         ]

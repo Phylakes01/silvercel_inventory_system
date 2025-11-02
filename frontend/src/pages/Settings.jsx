@@ -129,7 +129,7 @@ export default function Settings() {
   };
 
   return (
-    <div>
+    <div className='mt-2 sm:mt-0'>
       <p className="text-2xl font-semibold mb-6">Settings</p>
       <div className="space-y-6 max-w-[100vw]">
         <Card className="p-6">

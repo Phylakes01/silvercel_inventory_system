@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   ChevronLeft,
+  Tags,
 } from "lucide-react";
 
 export default function AppSidebar() {
@@ -23,6 +24,7 @@ export default function AppSidebar() {
   const menuItems = [
     { title: "Dashboard", icon: CircleGauge, path: "/app/dashboard" },
     { title: "Products", icon: Package, path: "/app/products" },
+    { title: "Categories", icon: Tags, path: "/app/categories" },
     { title: "Settings", icon: Settings, path: "/app/settings" },
 
   ];
