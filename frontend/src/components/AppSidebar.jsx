@@ -22,7 +22,9 @@ export default function AppSidebar() {
 
   const menuItems = [
     { title: "Dashboard", icon: CircleGauge, path: "/app/dashboard" },
+    { title: "Products", icon: Package, path: "/app/products" },
     { title: "Settings", icon: Settings, path: "/app/settings" },
+
   ];
 
   const handleNavigate = (item) => {
@@ -41,7 +43,7 @@ export default function AppSidebar() {
       {/* Mobile Menu Toggle - hide at lg when sidebar is always visible */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-primary text-background shadow-md
+        className={`lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-primary text-white shadow-md
           ${isOpen && "hidden"}
           `}
       >

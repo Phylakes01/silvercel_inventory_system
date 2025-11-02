@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { AlertTriangle } from 'lucide-react';
 
 const LowStockProducts = () => {
   const products = [
@@ -45,11 +46,12 @@ const LowStockProducts = () => {
     <div className="bg-background">
       <div className="max-w-4xl mx-auto">
         <Card className="border border-border shadow-sm">
-          <CardContent className="pl-3 pr-3 sm:pl-6 sm:pr-6">
-            <div className="mb-4 sm:mb-6">
-              <h2 className="sm:text-lg text-sm font-semibold text-foreground pl-2 pr-2">
+          <CardContent className="pl-5 pr-3 sm:pl-6 sm:pr-6">
+            <div className="mb-4 sm:mb-6 flex items-center gap-2">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
+                <h2 className="sm:text-lg text-sm font-semibold text-foreground pl-1 pr-2">
                 Low Stock Products
-              </h2>
+                </h2>
             </div>
             
             <div className="space-y-2 sm:space-y-3 md:space-y-4">
