@@ -5,6 +5,8 @@ import StatusCards from "@/components/StatusCards";
 import { SalesTrendChart } from "@/components/SalesTrendChart";
 import StockByCategory from "../components/StockByCategory";
 import LowStockPopover from "@/components/LowStockPopover";
+import BestSellingProducts from "../components/BestSellingProducts";
+import LowStockProducts from "../components/LowStockProducts";
 import { 
     PackageCheck, 
     PhilippinePeso, 
@@ -51,6 +53,39 @@ const exampleLowStockItems = [
   { name: "Bracelet", stock: 3 },
 ];
 
+const dashboard_products = [
+    {
+        id: 1,
+        name: 'Charms',
+        quantity: '50 Pcs',
+        emoji: '🔮'
+    },
+    {
+        id: 2,
+        name: 'Bracelets',
+        quantity: '40 Pcs',
+        emoji: '📿'
+    },
+    {
+        id: 3,
+        name: 'Rings',
+        quantity: '30 Pcs',
+        emoji: '💍'
+    },
+    {
+        id: 4,
+        name: 'Earrings',
+        quantity: '20 Pcs',
+        emoji: '💎'
+    },
+    {
+        id: 5,
+        name: 'Necklaces and Pendants',
+        quantity: '60 Pcs',
+        emoji: '📿'
+    }
+];
+
 export default function Dashboard() {
     const { session, logout } = UserAuth();
     console.log(session);
@@ -78,6 +113,10 @@ export default function Dashboard() {
             </div>
             <SalesTrendChart />
             <StockByCategory />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <BestSellingProducts products={dashboard_products} />
+                <LowStockProducts />
+            </div>
         </div>
     )
 }
