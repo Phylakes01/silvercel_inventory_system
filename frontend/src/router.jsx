@@ -11,7 +11,8 @@ import Settings from "@/pages/Settings";
 import ChangeEmail from "@/pages/ChangeEmail";
 import Products from "@/pages/Products";
 import Categories from "@/pages/Categories";
-import SalesOrders from "./pages/SalesOrders";
+import SalesOrders from "@/pages/SalesOrders";
+import Welcome from "@/pages/Welcome";
 
 export const router = createBrowserRouter([
     { path: "/", element: <Login /> },
@@ -56,6 +57,12 @@ export const router = createBrowserRouter([
         element: 
             (<ResetPasswordRoute>
                 <UpdatePassword />
+            </ResetPasswordRoute>)
+    },
+    { path: "/welcome", 
+        element: 
+            (<ResetPasswordRoute>
+                <Welcome />
             </ResetPasswordRoute>)
     },
     { path: "/change_email", 
