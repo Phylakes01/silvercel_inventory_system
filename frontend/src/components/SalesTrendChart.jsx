@@ -153,7 +153,7 @@ const chartConfig = {
   },
   itemsSold: {
     label: "Items Sold",
-    color: "var(--chart-5)",
+    color: "var(--destructive)",
   },
 }
 
@@ -225,12 +225,12 @@ export function SalesTrendChart() {
                 <linearGradient id="fillItems" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor="var(--chart-5)"
+                    stopColor="var(--destructive)"
                     stopOpacity={0.8}
                   />
                   <stop
                     offset="95%"
-                    stopColor="var(--chart-5)"
+                    stopColor="var(--destructive)"
                     stopOpacity={0.1}
                   />
                 </linearGradient>
@@ -271,7 +271,7 @@ export function SalesTrendChart() {
                 dataKey="itemsSold"
                 type="natural"
                 fill="url(#fillItems)"
-                stroke="var(--chart-5)"
+                stroke="var(--destructive)"
                 strokeWidth={2}
               />
               <Area
