@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { ShoppingCart, Package, Search, Pencil, Trash2, Calendar as CalendarIcon } from "lucide-react"
+import { ShoppingCart, Package, Search, Pencil, Trash2, Calendar as CalendarIcon, Clock, Download } from "lucide-react"
 import { toast } from "sonner"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar" // shadcn Calendar
@@ -281,7 +281,8 @@ export default function SalesOrders() {
         <Button 
           variant="outline"
           onClick={() => window.location.href='http://localhost/silvercel_inventory_system/backend/api/sales_report.php'}>
-          Download Report
+          <Download className="h-4 w-4 mr-0 sm:mr-1" />
+          <span className="hidden sm:block">Download Report</span>
         </Button>
       </div>
 
@@ -292,7 +293,7 @@ export default function SalesOrders() {
           <CardDescription>Create a new sales order by selecting a product and quantity</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* Product Selection Dialog */}
             <div className="space-y-2 lg:col-span-2">
               <Label htmlFor="product">Product</Label>
@@ -361,25 +362,37 @@ export default function SalesOrders() {
                     <div className="mt-3 grid grid-cols-2 gap-2 items-center">
                       <div className="flex flex-col">
                         <Label className="text-sm">Time</Label>
-                        <Input
-                          type="time"
-                          value={orderTime}
-                          onChange={(e) => {
-                            const t = e.target.value
-                            setOrderTime(t)
-                            // if a date is already selected, update its time immediately
-                            if (orderDate) {
-                              const d = new Date(orderDate)
-                              const [hh = "00", mm = "00"] = t.split(":")
-                              d.setHours(parseInt(hh, 10))
-                              d.setMinutes(parseInt(mm, 10))
-                              d.setSeconds(0)
-                              d.setMilliseconds(0)
-                              setOrderDate(d)
-                            }
-                          }}
-                          className="w-full"
-                        />
+                        <div className="relative w-full">
+                          <Input
+                            type="time"
+                            value={orderTime}
+                            onChange={(e) => {
+                              const t = e.target.value
+                              setOrderTime(t)
+                              if (orderDate) {
+                                const d = new Date(orderDate)
+                                const [hh = "00", mm = "00"] = t.split(":")
+                                d.setHours(parseInt(hh, 10))
+                                d.setMinutes(parseInt(mm, 10))
+                                d.setSeconds(0)
+                                d.setMilliseconds(0)
+                                setOrderDate(d)
+                              }
+                            }}
+                            className="
+                              w-fit pr-7 md:pr-10
+                              text-foreground
+                              dark:text-foreground
+                              [&::-webkit-calendar-picker-indicator]:opacity-0
+                              [&::-webkit-calendar-picker-indicator]:absolute
+                              [&::-webkit-calendar-picker-indicator]:right-0
+                              [&::-webkit-calendar-picker-indicator]:w-full
+                              [&::-webkit-calendar-picker-indicator]:h-full
+                              [&::-webkit-calendar-picker-indicator]:cursor-pointer
+                            "
+                          />
+                          <Clock size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                        </div>
                       </div>
 
                       {/* Quick buttons */}
@@ -482,7 +495,7 @@ export default function SalesOrders() {
                       <td className="p-4 align-middle text-muted-foreground text-xs sm:text-sm">
                         {new Date(order.order_date).toLocaleString()}
                       </td>
-                      <td className="p-4 align-middle">
+                      <td className="p-4 align-middle flex">
                         <Button variant="ghost" size="icon" onClick={() => handleEditClick(order)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
