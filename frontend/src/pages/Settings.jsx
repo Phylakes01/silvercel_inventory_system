@@ -455,10 +455,10 @@ export default function Settings() {
                 </div>
                 <Button
                     onClick={handleLogout}
-                    className="gap-2"
+                    className="sm:gap-2"
                 >
                     <LogOut className="h-4 w-4" />
-                    Logout
+                    <span className='hidden sm:block'>Logout</span>
                 </Button>
             </div>
 

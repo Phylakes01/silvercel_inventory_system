@@ -520,22 +520,22 @@ export default function SalesOrders() {
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Edit Order #{selectedOrder.id}</DialogTitle>
+                  <DialogTitle className="text-sm md:text-xl">Edit Sale #{selectedOrder.id}</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="product_name" className="text-right">
+                    <Label htmlFor="product_name" className="sm:text-right text-xs sm:text-sm">
                       Product Name
                     </Label>
                     <Input
                       id="product_name"
                       value={selectedOrder.product_name}
                       readOnly
-                      className="col-span-3"
+                      className="col-span-3 text-xs sm:text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="quantity_sold" className="text-right">
+                    <Label htmlFor="quantity_sold" className="sm:text-right text-xs sm:text-sm">
                       Quantity
                     </Label>
                     <Input
@@ -545,7 +545,7 @@ export default function SalesOrders() {
                       onChange={(e) =>
                         setSelectedOrder({ ...selectedOrder, quantity_sold: e.target.value })
                       }
-                      className="col-span-3"
+                      className="col-span-3 text-xs sm:text-sm"
                     />
                   </div>
                     {product && (
@@ -556,7 +556,7 @@ export default function SalesOrders() {
                       </div>
                     )}
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="total_price" className="text-right">
+                    <Label htmlFor="total_price" className="sm:text-right text-xs sm:text-sm">
                       Total Price
                     </Label>
                     <Input
@@ -566,11 +566,11 @@ export default function SalesOrders() {
                       onChange={(e) =>
                         setSelectedOrder({ ...selectedOrder, total_price: e.target.value })
                       }
-                      className="col-span-3"
+                      className="col-span-3 text-xs sm:text-sm"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="order_date" className="text-right">
+                    <Label htmlFor="order_date" className="sm:text-right text-xs sm:text-sm">
                       Order Date
                     </Label>
                     <Input
@@ -581,7 +581,7 @@ export default function SalesOrders() {
                       onChange={(e) =>
                         setSelectedOrder({ ...selectedOrder, order_date: e.target.value })
                       }
-                      className="col-span-3"
+                      className="col-span-3 text-xs sm:text-sm"
                     />
                   </div>
                 </div>
@@ -595,17 +595,17 @@ export default function SalesOrders() {
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-muted/30 rounded-lg">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Total Orders</p>
-                <p className="text-2xl font-bold">{orders.length}</p>
+                <p className="sm:text-2xl text-lg font-bold">{orders.length}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Total Sales</p>
-                <p className="text-2xl font-bold text-primary">
+                <p className="sm:text-2xl text-lg font-bold text-primary">
                   ₱{orders.reduce((sum, order) => sum + parseFloat(order.total_price), 0).toFixed(2)}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Items Sold</p>
-                <p className="text-2xl font-bold">
+                <p className="sm:text-2xl text-lg font-bold">
                   {orders.reduce((sum, order) => sum + parseInt(order.quantity_sold), 0)}
                 </p>
               </div>
