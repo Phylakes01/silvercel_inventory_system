@@ -160,7 +160,7 @@ export default function Settings() {
 
             {/* item */}
             <div className="flex items-center justify-between">
-                <div className='mr-2'>
+                <div className='mr-4'>
                 <h3 className="font-medium">Color Theme</h3>
                 <p className="text-sm text-muted-foreground">
                     Switch between colors
