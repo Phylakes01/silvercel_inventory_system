@@ -36,16 +36,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     $stmt->close();
 } elseif ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    $id = $_GET['id'];
+   $id = $_GET['id'];
+
+    // Step 1: Check if category is linked to any products
+    $checkQuery = "SELECT COUNT(*) AS total FROM products WHERE category_id = ?";
+    $checkStmt = $conn->prepare($checkQuery);
+    $checkStmt->bind_param("i", $id);
+    $checkStmt->execute();
+    $checkResult = $checkStmt->get_result()->fetch_assoc();
+
+    if ($checkResult['total'] > 0) {
+        // Cannot delete — category in use
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Cannot delete category: it is linked to one or more products.'
+        ]);
+        $checkStmt->close();
+        exit; // Stop execution here
+    }
+
+    $checkStmt->close();
+
+    // Step 2: Category is safe to delete
     $sql = "DELETE FROM categories WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        echo json_encode(['message' => 'Category deleted successfully']);
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Category deleted successfully'
+        ]);
     } else {
-        echo json_encode(['message' => 'Error deleting category']);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error deleting category'
+        ]);
     }
+
     $stmt->close();
 }
 

@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
+import { API_BASE_URL } from "@/config";
 
 export default function ProductReportPreview({ open, onOpenChange }) {
   const [reportData, setReportData] = useState([]);
@@ -35,7 +35,7 @@ export default function ProductReportPreview({ open, onOpenChange }) {
 
   useEffect(() => {
     if (open) {
-      fetch('http://localhost/silvercel_inventory_system/backend/api/products.php')
+      fetch(`${API_BASE_URL}/products.php`)
         .then(response => response.json())
         .then(data => {
           if (Array.isArray(data)) {
@@ -68,25 +68,26 @@ export default function ProductReportPreview({ open, onOpenChange }) {
     setSelectedRows(newFilteredData.map(row => row.id));
   }, [selectedCategory, reportData]);
 
+  useEffect(() => {
+      fetch(`${API_BASE_URL}/categories.php`)
+          .then(response => response.json())
+          .then(data => setCategories(data));
+  
+      const categoryString = selectedCategories.length > 0 ? selectedCategories.join(',') : 'all';
+      fetch(`${API_BASE_URL}/products.php?category=${categoryString}`)
+          .then(response => response.json())
+          .then(data => setProducts(data));
+  }, [selectedCategories]);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
   const handleDownload = () => {
-    if (selectedRows.length === 0) {
-        toast.info("No products selected to download.");
-        return;
-    }
-
-    const categoryQuery = `category=${encodeURIComponent(selectedCategory)}`;
-    const productIdsQuery = selectedRows.map(id => `product_ids[]=${id}`).join('&');
-    
-    const url = `http://localhost/silvercel_inventory_system/backend/api/product_report.php?${categoryQuery}&${productIdsQuery}`;
-    
-    window.location.href = url;
-  };
-
+        const categoryString = selectedCategories.join(',');
+        const url = `${API_BASE_URL}/download_products.php?categories=${categoryString}`;
+        window.location.href = url;
+    };
   const handleSelectAll = (checked) => {
     if (checked) {
       setSelectedRows(filteredReportData.map(row => row.id));

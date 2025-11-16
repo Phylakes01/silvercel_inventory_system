@@ -26,6 +26,7 @@ import { Plus, Search, Edit, Trash2, Download } from "lucide-react"
 import { toast } from "sonner"
 import Fuse from "fuse.js"
 import BackToTopButton from "@/components/BackToTopButton";
+import { API_BASE_URL } from '@/config';
 
 const initialProducts = [
   {
@@ -323,7 +324,7 @@ export default function Products() {
     const [isReportPreviewOpen, setIsReportPreviewOpen] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost/silvercel_inventory_system/backend/api/products.php')
+        fetch(`${API_BASE_URL}/products.php`)
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -342,7 +343,7 @@ export default function Products() {
                 setProducts([]);
             });
 
-        fetch('http://localhost/silvercel_inventory_system/backend/api/categories.php')
+        fetch(`${API_BASE_URL}/categories.php`)
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -385,14 +386,14 @@ export default function Products() {
     }, [searchQuery, fuse, filteredByCategory]);
 
     const handleAddProduct = (newProductFormData) => {
-        fetch('http://localhost/silvercel_inventory_system/backend/api/products.php', {
+        fetch(`${API_BASE_URL}/products.php`, {
             method: 'POST',
             body: newProductFormData,
         })
         .then(response => response.json())
         .then(data => {
             if (data.id) {
-                fetch('http://localhost/silvercel_inventory_system/backend/api/products.php')
+                fetch(`${API_BASE_URL}/products.php`)
                     .then(response => response.json())
                     .then(data => {
                         if (Array.isArray(data)) {
@@ -416,14 +417,14 @@ export default function Products() {
     };
 
     const handleEditProduct = (updatedProductFormData) => {
-        fetch('http://localhost/silvercel_inventory_system/backend/api/products.php', {
+        fetch(`${API_BASE_URL}/products.php`, {
             method: 'POST',
             body: updatedProductFormData,
         })
         .then(response => response.json())
         .then((data) => {
             if (data.id) {
-                fetch('http://localhost/silvercel_inventory_system/backend/api/products.php')
+                fetch(`${API_BASE_URL}/products.php`)
                     .then(response => response.json())
                     .then(data => {
                         if (Array.isArray(data)) {
@@ -447,7 +448,7 @@ export default function Products() {
 
     const handleDeleteProduct = () => {
         if (deleteProduct) {
-            fetch(`http://localhost/silvercel_inventory_system/backend/api/products.php?id=${deleteProduct.id}`, {
+            fetch(`${API_BASE_URL}/products.php?id=${deleteProduct.id}`, {
                 method: 'DELETE',
             })
             .then(response => response.json())

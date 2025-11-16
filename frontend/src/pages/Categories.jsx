@@ -23,6 +23,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import BackToTopButton from "@/components/BackToTopButton";
+import { API_BASE_URL } from "@/config";
+import axios from "axios";
 
 function AddEditCategoryDialog({ isOpen, onOpenChange, onSave, editCategory }) {
   const [categoryName, setCategoryName] = useState("");
@@ -99,7 +101,7 @@ export default function Categories() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const fetchCategories = () => {
-    fetch("http://localhost/silvercel_inventory_system/backend/api/categories.php")
+    fetch(`${API_BASE_URL}/categories.php`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -126,7 +128,7 @@ export default function Categories() {
   }, []);
 
   const handleAddCategory = (name) => {
-    fetch("http://localhost/silvercel_inventory_system/backend/api/categories.php", {
+    fetch(`${API_BASE_URL}/categories.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +144,7 @@ export default function Categories() {
 
   const handleEditCategory = (name) => {
     if (editCategory) {
-      fetch("http://localhost/silvercel_inventory_system/backend/api/categories.php", {
+      fetch(`${API_BASE_URL}/categories.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -158,23 +160,38 @@ export default function Categories() {
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedCategories.length === 0) return;
 
-    const deletePromises = selectedCategories.map(id =>
-      fetch(`http://localhost/silvercel_inventory_system/backend/api/categories.php?id=${id}`, {
-        method: "DELETE",
-      })
-    );
+    try {
+      for (const id of selectedCategories) {
+        const response = await axios.delete(
+          `${API_BASE_URL}/categories.php?id=${id}`
+        );
 
-    Promise.all(deletePromises)
-      .then(() => {
-        toast.success(`${selectedCategories.length} categor(y/ies) deleted successfully`);
-        fetchCategories();
-        setSelectedCategories([]);
-        setShowDeleteDialog(false);
-      });
+        if (response.data.status === "error") {
+          // STOP deleting others if one fails
+          toast.error(response.data.message);
+          setShowDeleteDialog(false);
+          return;
+        }
+      }
+
+      if (selectedCategories.length === 1) {
+        toast.success("Category deleted successfully");
+      } else {
+        toast.success(`${selectedCategories.length} categories deleted successfully`);
+      }
+      fetchCategories();
+      setSelectedCategories([]);
+      setShowDeleteDialog(false);
+
+    } catch (error) {
+      toast.error("An error occurred while deleting categories");
+      setShowDeleteDialog(false);
+    }
   };
+
 
   const openEditDialog = (category) => {
     setEditCategory(category);
