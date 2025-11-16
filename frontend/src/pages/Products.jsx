@@ -86,7 +86,7 @@ function SearchBar({ searchQuery, onSearchChange }) {
       <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
       <Input
         type="text"
-        placeholder="Search by product name or category..."
+        placeholder="Search by product name..."
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         className="pl-10 rounded-lg text-xs sm:text-sm"
@@ -97,8 +97,6 @@ function SearchBar({ searchQuery, onSearchChange }) {
 
 
 // ProductCard Component (unchanged)
-// ProductCard Component
-// ProductCard Component
 function ProductCard({ product, onEdit, onDelete }) {
   return (
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg py-0 pb-6">
@@ -498,8 +496,8 @@ export default function Products() {
                     onSearchChange={setSearchQuery}
                 />
                 <Select value={selectedCategory} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)}>
-                    <SelectTrigger className="w-40 sm:w-48">
-                        <SelectValue placeholder="Category" />
+                    <SelectTrigger className="w-full sm:w-48">
+                        <SelectValue placeholder="Filter by Category" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Categories</SelectItem>
@@ -513,16 +511,50 @@ export default function Products() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {searchResults.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        onEdit={openEditDialog}
-                        onDelete={setDeleteProduct}
-                    />
-                ))}
-            </div>
+            {searchResults.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    {searchResults.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onEdit={openEditDialog}
+                            onDelete={(product) => setDeleteProduct(product)}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-12">
+                    <p className="text-muted-foreground text-lg">No products found matching "{searchQuery}"</p>
+                </div>
+            )}
+
+            {/* Add/Edit Product Dialog */}
+            <AddProductDialog
+                isOpen={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+                onAddProduct={handleAddProduct}
+                onEditProduct={handleEditProduct}
+                categories={categories}
+                editProduct={editProduct}
+            />
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={!!deleteProduct} onOpenChange={() => setDeleteProduct(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will permanently delete "{deleteProduct?.name}" from your inventory. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteProduct} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             <ProductReportPreview 
                 open={isReportPreviewOpen}
