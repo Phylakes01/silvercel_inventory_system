@@ -25,11 +25,68 @@ import ProductSelectionDialog from "@/components/sales_orders/ProductSelectionDi
 import { toast } from "sonner";
 import BackToTopButton from "@/components/BackToTopButton";
 import SalesReportPreview from "@/components/sales_orders/SalesReportPreview"
+import Fuse from "fuse.js"
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue
+} from "@/components/ui/select"
 import { API_BASE_URL } from '@/config';
 
 export default function SalesOrders() {
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/sales_orders.php`)
+        .then(response => response.json())
+        .then(data => setOrders(data))
+        .catch(error => console.error("Error fetching sales orders:", error));
+
+    fetch(`${API_BASE_URL}/products.php`)
+        .then(response => response.json())
+        .then(data => setProducts(data))
+        .catch(error => console.error("Error fetching products:", error));
+  }, []);
+
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
+
+  // Search and Filter functions for Sales Orders History
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedYear, setSelectedYear] = useState("all")
+
+  const fuseOptions = {
+    includeScore: false,
+    threshold: 0.3, // <-- LOWER = more accurate, HIGHER = more fuzzy
+    keys: ["product_name", "sales_id", "order_date"]
+  }
+
+  //const fuse = new Fuse(orders, fuseOptions)
+
+  // Get all years from orders
+  const years = Array.from(
+    new Set(orders.map(o => new Date(o.order_date).getFullYear()))
+  ).sort((a, b) => b - a)
+
+  // STEP 1: Filter by year
+  let filteredOrders =
+    selectedYear === "all"
+      ? orders
+      : orders.filter(
+          o => new Date(o.order_date).getFullYear().toString() === selectedYear
+        )
+
+  // STEP 2: Create Fuse using the YEAR-filtered list
+  let fuse = new Fuse(filteredOrders, fuseOptions)
+
+  // STEP 3: Apply search query on the YEAR-filtered list
+  if (searchQuery.trim() !== "") {
+    const fuseResults = fuse.search(searchQuery)
+    filteredOrders = fuseResults.map(r => r.item)
+  }
+  // Search and Filter functions for Sales Orders History
+
 
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [quantitySold, setQuantitySold] = useState("")
@@ -49,18 +106,6 @@ export default function SalesOrders() {
   const [isDateTimePopoverOpen, setIsDateTimePopoverOpen] = useState(false)
   const [isReportPreviewOpen, setIsReportPreviewOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/sales_orders.php`)
-        .then(response => response.json())
-        .then(data => setOrders(data))
-        .catch(error => console.error("Error fetching sales orders:", error));
-
-    fetch(`${API_BASE_URL}/products.php`)
-        .then(response => response.json())
-        .then(data => setProducts(data))
-        .catch(error => console.error("Error fetching products:", error));
-  }, []);
 
   const handleSubmit = () => {
     if (!selectedProduct || !quantitySold || !orderDate) {
@@ -488,6 +533,35 @@ export default function SalesOrders() {
         <CardHeader>
           <CardTitle>Sales Orders History</CardTitle>
           <CardDescription>View all completed sales orders</CardDescription>
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+    
+              {/* Search Input */}
+              <div className="relative w-full sm:w-1/2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by product, sales ID, or date..."
+                  className="pl-9"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              {/* Year Filter */}
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="sm:w-40">
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="all">All Years</SelectItem>
+                  {years.map(year => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
         </CardHeader>
         <CardContent>
           <div className="rounded-md border border-border overflow-x-auto">
@@ -518,66 +592,42 @@ export default function SalesOrders() {
                 </tr>
               </thead>
               <tbody>
-                {orders.length === 0 ? (
+                {filteredOrders.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="h-24 text-center text-muted-foreground">
                       No sales orders found
                     </td>
                   </tr>
                 ) : (
-                    (() => {
-                      const groupedOrders = orders.reduce((acc, order) => {
-                        const year = new Date(order.order_date).getFullYear();
-                        if (!acc[year]) {
-                          acc[year] = [];
-                        }
-                        acc[year].push(order);
-                        return acc;
-                      }, {});
+                    filteredOrders.map((order, index) => {
+                      const order_number = index + 1;
 
-                      const sortedYears = Object.keys(groupedOrders).sort((a, b) => b - a);
-
-                      return sortedYears.flatMap(year => {
-                        const yearHeader = (
-                          <tr key={`year-${year}`} className="bg-muted/80">
-                            <td colSpan={6} className="p-2 text-center font-semibold">
-                              {year}
-                            </td>
-                          </tr>
-                        );
-
-                        const yearOrders = groupedOrders[year].map((order, index) => {
-                          const order_number = index + 1;
-                          return (
-                            <tr
-                              key={order.id}
-                              className="border-b border-border transition-colors hover:bg-muted/50"
-                            >
-                              <td className="p-4 align-middle font-medium">{order_number}</td>
-                              <td className="p-4 align-middle">{order.sales_id}</td>
-                              <td className="p-4 align-middle">{order.product_name}</td>
-                              <td className="p-4 align-middle">{order.quantity_sold}</td>
-                              <td className="p-4 align-middle font-semibold text-primary">
-                                ₱{parseFloat(order.total_price).toFixed(2)}
-                              </td>
-                              <td className="p-4 align-middle text-muted-foreground text-xs sm:text-sm">
-                                {new Date(order.order_date).toLocaleString()}
-                              </td>
-                              <td className="p-4 align-middle flex">
-                                <Button variant="ghost" size="icon" onClick={() => handleEditClick(order)}>
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <Button variant="ghost" size="icon" onClick={() => handleDelete(order)}>
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </td>
-                            </tr>
-                          );
-                        });
-
-                        return [yearHeader, ...yearOrders];
-                      });
-                    })()
+                      return (
+                        <tr
+                          key={order.id}
+                          className="border-b border-border transition-colors hover:bg-muted/50"
+                        >
+                          <td className="p-4">{order_number}</td>
+                          <td className="p-4">{order.sales_id}</td>
+                          <td className="p-4">{order.product_name}</td>
+                          <td className="p-4">{order.quantity_sold}</td>
+                          <td className="p-4 font-semibold text-primary">
+                            ₱{parseFloat(order.total_price).toFixed(2)}
+                          </td>
+                          <td className="p-4 text-muted-foreground text-xs sm:text-sm">
+                            {new Date(order.order_date).toLocaleString()}
+                          </td>
+                          <td className="p-4 flex gap-1">
+                            <Button variant="ghost" size="icon" onClick={() => handleEditClick(order)}>
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(order)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      )
+                    })
                   )}
               </tbody>
             </table>
@@ -597,19 +647,21 @@ export default function SalesOrders() {
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle className="text-sm md:text-xl">Edit Sale</DialogTitle>
+                  <DialogTitle className="text-sm md:text-xl">
+                    Edit Sale #{selectedOrder?.sales_id}
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="product_name" className="sm:text-right text-xs sm:text-sm">
                       Product Name
                     </Label>
-                    <Input
+                    <span
                       id="product_name"
-                      value={selectedOrder.product_name}
-                      readOnly
-                      className="col-span-3 text-xs sm:text-sm"
-                    />
+                      className="col-span-3 text-xs sm:text-sm text-muted-foreground"
+                    >
+                      {selectedOrder.product_name}
+                    </span>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="quantity_sold" className="sm:text-right text-xs sm:text-sm">

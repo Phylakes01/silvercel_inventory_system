@@ -480,11 +480,11 @@ export default function Products() {
                 <div className="flex items-center gap-2">
                     <Button onClick={openAddDialog} className="gap-2 w-fit sm:w-auto text-white">
                         <Plus className="h-4 w-4" />
-                        <span>Add New</span>
+                        <span className="hidden sm:block">Add New</span>
                     </Button>
                     <Button variant="outline" onClick={handleDownload}>
-                        <Download className="h-4 w-4 mr-2" />
-                        <span>Download</span>
+                        <Download className="h-4 w-4 sm:mr-2" />
+                        <span className="hidden sm:block">Download</span>
                     </Button>
                 </div>
             </div>

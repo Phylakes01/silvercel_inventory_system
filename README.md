@@ -6,6 +6,7 @@ The **Silvercel Inventory System** is a standalone inventory management system d
 
 ### Frontend
 - React
+- Shadcn
 - Vite
 - React Router
 - Tailwind CSS

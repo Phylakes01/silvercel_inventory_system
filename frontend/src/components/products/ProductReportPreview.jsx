@@ -95,8 +95,8 @@ export default function ProductReportPreview({ open, onOpenChange }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl">
+    <Dialog open={open} onOpenChange={onOpenChange} className="min-w-[90vw] sm:min-w-[80vw] lg:min-w-[60vw]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Product Report Preview</DialogTitle>
           <DialogDescription>

@@ -28,7 +28,7 @@ const LowStockPopover = () => {
       <PopoverTrigger className="relative mr-2 bg-primary text-white p-3 rounded-4xl hover:bg-primary/80 transition-colors shadow-md hover:shadow-lg">
         <Bell className="h-6 w-6" />
         {lowStockItems.length > 0 && (
-          <div className="absolute -top-2 -right-2 w-7 aspect-square text-xs font-bold bg-destructive rounded-full flex justify-center items-center">
+          <div className="absolute z-20 shadow-sm shadow-black -top-2 -right-2 w-7 aspect-square text-xs font-bold bg-destructive rounded-full flex justify-center items-center">
             {lowStockItems.length}
           </div>
         )}
